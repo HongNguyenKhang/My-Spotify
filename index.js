@@ -14,11 +14,11 @@ async function initialApp() {
 function displayTrack(data) {
     console.log(data);
     data.forEach((item) => {
-        // console.log(item)
+        // console.log(item.id);
         const imageUrl = item.album.images[0].url;
         const name = item.name;
         const artistName = item.artists.map((item) => item.name).join(" & ");
-        console.log(artistName);
+        // console.log(artistName);
 
         // Tạo ra thẻ div
         const element = document.createElement("div");
@@ -28,14 +28,39 @@ function displayTrack(data) {
         element.innerHTML = `<div class="track-card-container">
                                 <img src="${imageUrl}" alt="">
                                 <h3>${name}</h3>
-                                <p>${artistName}</p>
+                                <p>${truncateText(artistName, 25)}</p>
                             </div>`;
+
+        //Thêm event listner để phát nhạc
+        element.addEventListener("click", () => {
+            playTrack(item.id, name, artistName);
+        });
+        
+        
         // Gắn thẻ div đó vào track-section
         const trackSection = document.getElementById("track-section");
         trackSection.appendChild(element);
     });
-    
+}
 
+function truncateText(text, number) {
+    return text.length > number ? text.slice(0, number) + "..." : text;
+}
+
+function playTrack(id, name, artistName) {
+    const iframe = document.getElementById("iframe");
+    iframe.src = `https://open.spotify.com/embed/track/${id}?utm_source=generator&theme=0`
+    const modal = document.getElementById("modal");
+    modal.style.display = "block";
+    const modalName = document.getElementById("modal-name");
+    modalName.innerHTML = name;
+}
+
+function handleClose() {
+    const iframe = document.getElementById("iframe");
+    const modal = document.getElementById("modal");
+    modal.style.display = "none";
+    iframe.src = "";
 }
 
 async function getPopularTrack() {
@@ -45,7 +70,7 @@ async function getPopularTrack() {
                 Authorization: `Bearer ${accessToken}`,
             },
             params:{
-                q:"Keshi",
+                q:"Thịnh Suy",
                 type:"track",
                 limit:"10",
             },

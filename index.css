@@ -157,3 +157,25 @@ main .card-section .section-header h2 {
 .track-section .track-card p {
     opacity: 0.7;
 }
+
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 400px;
+    z-index: 10;
+    padding: 50px;
+    background-color: #7877c6;
+    border-radius: 40px;
+    display: none;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
