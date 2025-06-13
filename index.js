@@ -1,7 +1,27 @@
-let accessToken
+let accessToken;
+let searchTimeOut;
 document.addEventListener("DOMContentLoaded", function(){
     initialApp();
-})
+    setupSearchListener();
+});
+
+function setupSearchListener() {
+    const inputSearch = document.getElementById("input-search");
+    inputSearch.addEventListener("input", (e) =>{
+
+        const querry = e.target.value.trim();
+        clearTimeout(searchTimeOut);
+        //debounce
+        searchTimeOut = setTimeout(async () => {
+            if(querry) {
+            const response = await getPopularTrack(querry);
+            resetTrack();
+            displayTrack(response.tracks.items)
+            }
+        },500);
+        
+    });
+}
 
 async function initialApp() {
     accessToken = await getSpotifyToken();
@@ -11,8 +31,12 @@ async function initialApp() {
     }
 }
 
+function resetTrack() {
+    const trackSection = document.getElementById("track-section");
+    trackSection.innerHTML = "";
+}
+
 function displayTrack(data) {
-    console.log(data);
     data.forEach((item) => {
         // console.log(item.id);
         const imageUrl = item.album.images[0].url;
@@ -63,14 +87,14 @@ function handleClose() {
     iframe.src = "";
 }
 
-async function getPopularTrack() {
+async function getPopularTrack(querry = "Thịnh Suy") {
     try {
         const response = await axios.get("https://api.spotify.com/v1/search",{
             headers:{
                 Authorization: `Bearer ${accessToken}`,
             },
             params:{
-                q:"Thịnh Suy",
+                q:querry,
                 type:"track",
                 limit:"10",
             },
